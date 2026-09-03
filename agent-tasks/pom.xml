@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.apeloa</groupId>
+        <artifactId>apeloa-agent-java</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>agent-tasks</artifactId>
+    <name>apeloa-agent :: agent-tasks</name>
+    <description>scheduler 集成 + 邮件触发（IMAP 轮询）</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.apeloa</groupId>
+            <artifactId>agent-core</artifactId>
+        </dependency>
+        <!-- M2 启用：定时任务调度扩展。注意 agentscope-extensions-scheduler 是 pom
+             聚合打包（无 jar），M2 落地时改依赖其具体子模块 artifact。 -->
+    </dependencies>
+</project>

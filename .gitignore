@@ -1,0 +1,14 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# PoC 运行时产物（M1-4/7/8 验证用 workspace）
+poc-workspace/
+
+# 日志与临时
+*.log
+/tmp/

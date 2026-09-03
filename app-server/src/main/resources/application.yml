@@ -1,0 +1,99 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  # 虚拟线程承载 SSE 长连接（ADR #4）；50 并发下避免平台线程占用
+  threads:
+    virtual:
+      enabled: true
+
+  datasource:
+    # stringtype=unspecified：让 setString 直写 jsonb/uuid 列（MyBatis 实体按 String 映射
+    # payload，无此参数 PG 会拒收 "character varying" 到 jsonb）。
+    url: ${DATABASE_URL:jdbc:postgresql://111.91.21.112:5432/agent-timo?stringtype=unspecified}
+    username: ${POSTGRES_USER:timo}
+    password: ${POSTGRES_PASSWORD:timo123}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  jackson:
+    default-property-inclusion: non_null
+
+  servlet:
+    multipart:
+      # 与 WorkspaceFileService.MAX_UPLOAD_BYTES 对齐；request 上限留 multipart 边界开销余量
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+# --- AgentScope (M1-4 PoC) ---
+# 默认（main profile）不设 agentscope.model.provider，故 OpenAI 模型 bean 与 ReActAgent
+# bean 均不创建 —— 启动干净、无需 new-api 可达。
+# 跑通 PoC：--spring.profiles.active=poc（见 application-poc.yml，装配 OpenAI 兼容模型指向 new-api）。
+app:
+  # 沙箱根：每用户 <root>/<userId>/{workspace,home}（env 名沿用源项目 SANDBOX_ROOT）
+  sandbox:
+    root: ${SANDBOX_ROOT:sandboxes}
+
+  # --- 聊天会话（M1-6）---
+  chat:
+    # 每会话 SSE 事件环形缓冲条数：Last-Event-Id 落在窗内即增量补发，超窗回退全量重建。
+    buffer-size: 2000
+    # 空闲驱逐阈值：仅 IDLE 且无 SSE 连接的会话才回收（M1-6 无持久化，驱逐即丢历史）。
+    idle-minutes: 30
+    # 每会话 ReActAgent 的系统提示与最大迭代轮数。
+    sys-prompt: "你是 apeloa-agent 的编码助手，可用工具读写与执行工作区文件。"
+    max-iters: 20
+
+  security:
+    # 开发态身份来源：取请求头 X-User-Id，缺失回落 id。注意：启用期间路由没有真实鉴权。
+    # M1-3 起默认关闭（真认证 = SaTokenCurrentUserProvider）；测试与本地调试经
+    # application-test.yml / 覆盖参数显式打开。
+    dev-user:
+      enabled: false
+      id: dev
+
+  poc:
+    agentscope:
+      # 触发工具调用（write_file → read_file），实证 M1-7 工具在真实模型链路可用。
+      prompt: "请在工作区创建 hello.txt，内容为「你好，timo」，然后用工具读出它确认内容。"
+
+# --- Sa-Token（M1-3 认证，用户决策替代 Spring Security）---
+# 对齐源 pi_session 契约：HttpOnly + SameSite=Lax + Path=/ + 7d，非滑动续期，
+# 浏览器路径只认 cookie（不读 header）。JWT_SECRET 无默认值：真认证模式下缺失即拒启
+# （SaTokenConfig fail-fast），避免再犯硬编码密钥。
+sa-token:
+  token-name: timo_session
+  timeout: 604800 # 7d，秒；cookie maxAge 同步取该值
+  active-timeout: -1 # 关闭活跃度检查（非滑动：源无续期）
+  is-read-cookie: true
+  is-read-header: false
+  # 注意：1.46 的 is-http 不再控制 cookie HttpOnly，须写在 cookie 块（实测 Set-Cookie 缺 HttpOnly）
+  cookie:
+    http-only: true
+    same-site: lax
+  jwt-secret-key: ${JWT_SECRET:agent-timo}
+
+# MyBatis-Plus（顶层前缀，非 spring.*）：schema 由 Flyway 管理；mapper XML 约定
+# classpath*:/mapper/**/*.xml（M1-11 的三张表暂用注解 SQL + BaseMapper，未落 XML）。
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-handlers-package: com.apeloa.agent.db # UUID 实体字段 ↔ PG uuid 列
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: input # 主键由应用侧生成 UUID 后显式置入
+
+logging:
+  level:
+    root: INFO
+    com.apeloa: DEBUG

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        apeloa-agent-java: Java 复刻 of E:\apeloa\apeloa-agent (Node/TS pi-agent).
+        进程内 AgentScope 模型消除源项目 RPC/孤儿进程/JSONL 切分三层顽疾。
+
+        技术栈锁定（2026-09-02 经 Maven Central 实测）：
+          - AgentScope Java 2.0.2（agentscope-dependencies-bom）
+          - Spring Boot 4.0.4 / Spring 7.0.7（2.0.2 BOM 强制；spec 原写 3.3+ 已据此对齐为 4.0.4）
+          - JDK 21（虚拟线程承载 SSE 长连接）
+
+        依赖方向（spec 02-tech-design §2.3）：
+          app-server → agent-plugins → agent-core → (agentscope-harness)
+                     → agent-tasks  ↗   agent-workspace ↗   agent-admin ↗
+        叶子模块（agent-core/workspace/plugins/tasks/admin）保持框架无关，
+        Spring Boot 栈与可执行打包仅由 app-server 引入。
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.0.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.apeloa</groupId>
+    <artifactId>apeloa-agent-java</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>apeloa-agent-java</name>
+    <description>Java replica of apeloa-agent (pi-agent) on AgentScope 2.0.x + Spring Boot 4.0.x</description>
+
+    <modules>
+        <module>agent-core</module>
+        <module>agent-workspace</module>
+        <module>agent-plugins</module>
+        <module>agent-tasks</module>
+        <module>agent-admin</module>
+        <module>app-server</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- AgentScope Java 全家桶版本（BOM 统一锁定，吸取源项目 pi-* caret 漂移教训） -->
+        <agentscope.version>2.0.2</agentscope.version>
+
+        <!-- MyBatis-Plus：Boot 4 需使用 spring-boot4 专属 starter（3.5.9+ 适配 Spring Framework 7） -->
+        <mybatis-plus.version>3.5.17</mybatis-plus.version>
+
+        <!-- 认证：Sa-Token（1.45.0 起正式支持 Boot 4）；hutool 提供 BCrypt 与 sa-token-jwt 的 jwt 依赖 -->
+        <sa-token.version>1.46.0</sa-token.version>
+        <hutool.version>5.8.26</hutool.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--
+                AgentScope 2.0.2 BOM：管理 agentscope-* 全部坐标 + 锁定 Spring Boot 4.0.4 /
+                Spring 7.0.7 / jackson / reactor / junit 等。与 spring-boot-starter-parent
+                的 spring-boot 版本一致（均 4.0.4），无冲突。
+            -->
+            <dependency>
+                <groupId>io.agentscope</groupId>
+                <artifactId>agentscope-dependencies-bom</artifactId>
+                <version>${agentscope.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 本仓库内部模块 -->
+            <dependency>
+                <groupId>com.apeloa</groupId>
+                <artifactId>agent-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.apeloa</groupId>
+                <artifactId>agent-workspace</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.apeloa</groupId>
+                <artifactId>agent-plugins</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.apeloa</groupId>
+                <artifactId>agent-tasks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.apeloa</groupId>
+                <artifactId>agent-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

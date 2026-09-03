@@ -1,0 +1,4 @@
+- [Stack versions](stack-versions.md) — AgentScope 2.0.2 + Spring Boot 4.0.4 (spec 假设 3.3+ 是错的) + JDK 21，坐标与偏差
+- [Reference project map](reference-project-map.md) — 源 Node/TS 项目 E:\apeloa\apeloa-agent 的复刻关键事实（SSE 协议/沙箱/插件/危险命令正则/thinking patch）
+- [M1 PoC runbook](m1-poc-runbook.md) — M1-4 链路已实测跑通；网关模型 id=Xiaopu-Ai；本地无 PG 时用 exec:java + profiles=poc,test
+- [M1 sandbox port](m1-sandbox-port.md) — M1-9/10 沙箱移植完成、与源项目偏差基线、unix:uid 数值 chown 与 Windows relativize 两条实证、无 docker 缺口

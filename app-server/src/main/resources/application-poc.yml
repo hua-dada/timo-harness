@@ -1,0 +1,17 @@
+# poc profile：装配 AgentScope OpenAI 兼容模型（指向 new-api 网关）+ ReActAgent，跑通进程内 Agent 链路。
+# 启动：mvn -ntp -pl app-server spring-boot:run -Dspring-boot.run.profiles=poc
+#   （需 new-api 可达 + NEWAPI_API_KEY；否则仅验证 bean 装配，模型调用会 HTTP 失败）
+agentscope:
+  model:
+    provider: openai            # 激活 OpenAIChatModel bean（@ConditionalOnProperty）
+  openai:
+    enabled: true
+    api-key: ${NEWAPI_API_KEY:sk-u8HCoBb5n9IF7LG2noIJPWWHzU2PKO2xeooqjMxH0XNe67F2}
+    model-name: ${NEWAPI_MODEL:glm-5.3}   # 网关 /v1/models 实测 id
+    base-url: ${NEWAPI_BASE_URL:http://192.168.100.96:3000}
+    stream: true
+  agent:
+    enabled: true               # 激活 ReActAgent bean（@ConditionalOnBean(Model.class)）
+    name: "timo-agent"
+    sys-prompt: "你是 timo-agent-java 的 PoC 助手。"
+    max-iters: 5

@@ -1,0 +1,32 @@
+# test profile（M1-11）：真 PG 单独测试库（用户已确认）——05-test §5.1 的 Testcontainers
+# 在离线构建环境不可装（E:\repository 无此构件），按用户决策改为专用测试库。
+# 依赖：111.91.21.112 上需存在库 agent_timo_test（连接串见下）；Flyway 每次起跑真迁移。
+# 注意：本 profile 下所有 @SpringBootTest 都依赖该库可达，库不可达时测试会连接失败（预期）。
+spring:
+  datasource:
+    # stringtype=unspecified：与主配置同理，setString 直写 jsonb。
+    url: jdbc:postgresql://111.91.21.112:5432/agent_timo_test?stringtype=unspecified
+    username: ${POSTGRES_USER:timo}
+    password: ${POSTGRES_PASSWORD:timo123}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+mybatis-plus:
+  type-handlers-package: com.apeloa.agent.db
+
+# 存量测试（M1-6/11/12）全走 X-User-Id 头：显式开回 dev-user，主 yml 已默认关闭。
+app:
+  security:
+    dev-user:
+      enabled: true
+
+# Sa-Token 测试密钥：仅签发/验签测试 JWT，非敏感值；AuthFlowDbTest 经
+# @SpringBootTest(properties=...) 覆盖 app.security.dev-user.enabled=false 走真认证。
+sa-token:
+  jwt-secret-key: test-jwt-secret-not-for-production
+
+# 不设 agentscope.model.provider：模型与 ReActAgent bean 均不创建，
+# AgentScopePoCRunner 因此直接跳过，测试不触发任何网络调用。
