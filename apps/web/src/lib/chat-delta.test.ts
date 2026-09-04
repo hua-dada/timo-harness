@@ -14,7 +14,7 @@ function apply(
   deltas: readonly ChatDelta[],
   start: ChatDeltaState = initialChatDeltaState,
 ): { state: ChatDeltaState; effects: DeltaSideEffects } {
-  return deltas.reduce(
+  return deltas.reduce<{ state: ChatDeltaState; effects: DeltaSideEffects }>(
     (acc, d) => {
       const r = reduceChatDelta(acc.state, d);
       return {
@@ -122,12 +122,13 @@ describe("reduceChatDelta", () => {
     expect(state.messages[0]?.blocks).toHaveLength(1);
   });
 
-  it("tool_args/tool_end 未知 id 不炸", () => {
+  it("tool_args/tool_end 未知 id 不炸、不加块（ensureTail 只兜底空回合）", () => {
     const { state } = apply([
       { type: "tool_args", id: "nope", args: {} },
       { type: "tool_end", id: "nope", name: "bash", isError: false },
     ]);
-    expect(state.messages).toHaveLength(0);
+    expect(state.messages).toHaveLength(1);
+    expect(state.messages[0]?.blocks).toHaveLength(0);
   });
 
   it("text → tool → text 穿插（不合并跨工具文本）", () => {
@@ -173,7 +174,7 @@ describe("reduceChatDelta", () => {
   it("多回合：user 边界由 messages_loaded 给，流式回合接在已有消息后", () => {
     const loaded = apply([{ type: "messages_loaded", messages: [{ role: "user", content: "第一问" }] }]);
     const next = apply([{ type: "text_delta", text: "答" }], loaded.state);
-    expect(next.messages).toHaveLength(2);
-    expect(next.messages[1]?.role).toBe("assistant");
+    expect(next.state.messages).toHaveLength(2);
+    expect(next.state.messages[1]?.role).toBe("assistant");
   });
 });

@@ -48,8 +48,9 @@ app:
     buffer-size: 2000
     # 空闲驱逐阈值：仅 IDLE 且无 SSE 连接的会话才回收（M1-6 无持久化，驱逐即丢历史）。
     idle-minutes: 30
-    # 每会话 ReActAgent 的系统提示与最大迭代轮数。
-    sys-prompt: "你是 timo-agent 的编码助手，可用工具读写与执行工作区文件。"
+    # 每会话 ReActAgent 的系统提示与最大迭代轮数。长文件分段写：单次工具入参过长会被
+    # 模型网关截断/劣化成非法 JSON（实测 glm-5.3 经 new-api 15KB 即翻车）。
+    sys-prompt: "你是 timo-agent 的编码助手，可用工具读写与执行工作区文件。用户消息末尾的「附件：」行列出的文件已上传到 workspace 根目录，处理相关请求时用 read_file 读取。生成大文件时必须分多次写入：每次 write_file 的 content 不超过约 4000 字符，先写开头并预置唯一结束标记，再用 edit_file 以该标记为锚点逐段追加。"
     max-iters: 20
 
   security:

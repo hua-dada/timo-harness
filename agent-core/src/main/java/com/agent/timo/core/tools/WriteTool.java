@@ -23,7 +23,10 @@ public class WriteTool {
     }
 
     @Tool(name = "write_file",
-            description = "把内容整体写入 workspace 内的文件（UTF-8，覆盖已存在文件；父目录自动创建）。",
+            description = "把内容整体写入 workspace 内的文件（UTF-8，覆盖已存在文件；父目录自动创建）。"
+                    + "单次 content 不要超过约 4000 字符：更大的文件必须分段写——第一次写入开头并在末尾放唯一"
+                    + "结束标记（如 <!--APPEND-->），随后每次用 edit_file 把该标记替换为「下一段内容 + 标记」，"
+                    + "最后一段去掉标记。超长单次写入会因生成截断而失败。",
             concurrencySafe = false)
     public String write(
             @ToolParam(name = "path", description = "相对 workspace 的文件路径") String path,

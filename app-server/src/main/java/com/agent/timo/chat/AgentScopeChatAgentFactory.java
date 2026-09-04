@@ -49,7 +49,10 @@ public class AgentScopeChatAgentFactory implements ChatAgentFactory {
             ObjectProvider<Model> modelProvider,
             WorkspaceFileService workspaceFiles,
             DbAgentStateStore stateStore,
-            @Value("${app.chat.sys-prompt:你是 timo-agent 的编码助手，可用工具读写与执行工作区文件。}")
+            @Value("${app.chat.sys-prompt:你是 timo-agent 的编码助手，可用工具读写与执行工作区文件。"
+                    + "用户消息末尾的「附件：」行列出的文件已上传到 workspace 根目录，处理相关请求时用 read_file 读取。"
+                    + "生成大文件时必须分多次写入：每次 write_file 的 content 不超过约 4000 字符，"
+                    + "先写开头并预置唯一结束标记，再用 edit_file 以该标记为锚点逐段追加。}")
                     String sysPrompt,
             @Value("${app.chat.max-iters:20}") int maxIters) {
         this.modelProvider = modelProvider;
