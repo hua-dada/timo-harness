@@ -1,0 +1,241 @@
+/*
+ * 侘寂（wabi-sabi）设计 token：暖纸基调 + 炭墨 + 土色边框 + 暖阴影。
+ * 亮色 = 手工和纸（#f7f5f0/#fffef8/#f0ecdf）、墨 #2a2a28、土 #6b6557；
+ * 暗色 = 深炭（#0d0c0a/#161513）+ 灯下纸色文字 #e8e4da。
+ * Tailwind v4 经 @theme inline 把变量映射为 bg-background/text-muted-foreground 等工具类。
+ */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "highlight.js/styles/base16/gruvbox-dark-medium.css";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* 亮色：温暖纸质基调 */
+  --background: #f7f5f0;
+  --foreground: #2a2a28;
+  --card: #fffef8;
+  --card-foreground: #2a2a28;
+  --popover: #fffef8;
+  --popover-foreground: #2a2a28;
+  --primary: #6b6557;
+  --primary-foreground: #fffef8;
+  --secondary: #f0ecdf;
+  --secondary-foreground: #2a2a28;
+  --muted: #f0ecdf;
+  --muted-foreground: #6b6557;
+  --accent: #e9e3d4;
+  --accent-foreground: #2a2a28;
+  --destructive: #a4463c;
+  --border: #d7d1c2;
+  --input: #cfc8b6;
+  --ring: #8a8272;
+  --radius: 0.75rem;
+  /* 暖阴影（纸张立体感）：色相取褐墨，不用冷黑 */
+  --shadow-warm: 0 1px 2px rgb(74 67 54 / 0.08), 0 2px 8px rgb(74 67 54 / 0.08);
+  --shadow-warm-lg: 0 2px 6px rgb(74 67 54 / 0.1), 0 10px 28px rgb(74 67 54 / 0.14);
+}
+
+.dark {
+  /* 暗色：深邃炭墨，纸色文字 */
+  --background: #0d0c0a;
+  --foreground: #e8e4da;
+  --card: #161513;
+  --card-foreground: #e8e4da;
+  --popover: #161513;
+  --popover-foreground: #e8e4da;
+  --primary: #a89a80;
+  --primary-foreground: #14120e;
+  --secondary: #201e18;
+  --secondary-foreground: #e8e4da;
+  --muted: #201e18;
+  --muted-foreground: #9a9284;
+  --accent: #26231d;
+  --accent-foreground: #e8e4da;
+  --destructive: #c26a5e;
+  --border: #2c2922;
+  --input: #35312a;
+  --ring: #8a8272;
+  --shadow-warm: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px rgb(0 0 0 / 0.3);
+  --shadow-warm-lg: 0 2px 6px rgb(0 0 0 / 0.45), 0 10px 28px rgb(0 0 0 / 0.4);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif,
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  /* 衬线：品牌与标题（侘寂的纸墨气质） */
+  --font-serif: "Georgia", "Times New Roman", "Noto Serif SC", "Source Han Serif SC",
+    "SimSun", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+  #root {
+    height: 100dvh;
+  }
+}
+
+/* ── 纸质质感：暖光渐变 + 细噪点（手工纸的自然纹理）──────────────────────── */
+
+.paper-texture {
+  position: relative;
+  background-image:
+    radial-gradient(1100px 700px at 18% -8%, rgb(255 252 240 / var(--paper-glow, 0.55)), transparent 60%),
+    radial-gradient(900px 600px at 100% 108%, rgb(240 232 214 / calc(var(--paper-glow, 0.55) * 0.7)), transparent 55%);
+}
+.dark .paper-texture {
+  --paper-glow: 0.045;
+}
+:root:not(.dark) .paper-texture {
+  --paper-glow: 1;
+}
+/* 细噪点：极低透明度，只补「纸有肌理」的直觉 */
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── 暖阴影工具类（组件表面从冷黑影换成褐墨影）──────────────────────────── */
+
+.shadow-warm {
+  box-shadow: var(--shadow-warm);
+}
+.shadow-warm-lg {
+  box-shadow: var(--shadow-warm-lg);
+}
+
+/* 衬线品牌字（侧栏/登录页 logo 行） */
+.font-brand {
+  font-family: var(--font-serif);
+  letter-spacing: 0.02em;
+}
+
+/* 细滚动条（工具结果/思考流内滚区） */
+.scroll-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scroll-subtle::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scroll-subtle::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* 思考流 shimmer（流式中标签扫光） */
+@keyframes thinking-shimmer-ltr {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.thinking-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted-foreground) 0%,
+    var(--foreground) 50%,
+    var(--muted-foreground) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: thinking-shimmer-ltr 2.4s linear infinite;
+}
+
+/* 工具活动行运行态呼吸点 */
+@keyframes tool-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.tool-live-dot {
+  animation: tool-live-pulse 1.6s ease-in-out infinite;
+}
+
+/* 输入指示三点 */
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+.typing-dot {
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* 代码块：衬入暖炭底（gruvbox-dark 高亮色系与纸色协调） */
+.prose pre {
+  background: #1d1b16;
+  border: 1px solid rgb(74 67 54 / 0.35);
+  border-radius: calc(var(--radius) - 2px);
+}
+.prose code::after,
+.prose code::before {
+  content: "";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
