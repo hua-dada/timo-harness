@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.apeloa</groupId>
-        <artifactId>apeloa-agent-java</artifactId>
+        <groupId>com.timo</groupId>
+        <artifactId>agent-timo</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>agent-plugins</artifactId>
-    <name>apeloa-agent :: agent-plugins</name>
+    <name>timo-agent :: agent-plugins</name>
     <description>Plugin Registry 管理面 + 运行时装配（MCP/Skill）</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-core</artifactId>
         </dependency>
     </dependencies>

@@ -1,4 +1,4 @@
-# 《apeloa-agent Java 复刻项目 PRD + 架构设计方案》
+# 《timo-agent Java 复刻项目 PRD + 架构设计方案》
 
 **技术基线**：AgentScope Java 2.0.x（GA 2026-07，最新 2.0.1）｜Spring Boot 3.x｜JDK 17+｜PostgreSQL
 **文档版本**：v1.0
@@ -129,7 +129,7 @@ AgentScope Session 是线性持久化。设计映射层：
 **Maven 多模块**（对标官方仓库结构）：
 
 ```
-apeloa-agent-java/
+timo-agent-java/
 ├─ pom.xml                    (BOM：锁 agentscope 2.0.x)
 ├─ agent-core/                # Coding 工具集、Thinking Formatter、危险命令识别
 ├─ agent-workspace/           # per-uid 沙箱加固、插件白名单挂载、文件路由

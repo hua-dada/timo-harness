@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.apeloa</groupId>
-        <artifactId>apeloa-agent-java</artifactId>
+        <groupId>com.timo</groupId>
+        <artifactId>agent-timo</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>agent-workspace</artifactId>
-    <name>apeloa-agent :: agent-workspace</name>
+    <name>agent-timo :: agent-workspace</name>
     <description>per-uid 沙箱加固、插件白名单挂载、文件 HTTP 路由</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-core</artifactId>
         </dependency>
         <dependency>

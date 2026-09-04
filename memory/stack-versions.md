@@ -1,11 +1,11 @@
 ---
 name: stack-versions
-description: AgentScope 2.0.2 + Spring Boot 4.0.4 + JDK 21 — the locked stack for apeloa-agent-java
+description: AgentScope 2.0.2 + Spring Boot 4.0.4 + JDK 21 — the locked stack for timo-agent-java
 metadata:
   type: project
 ---
 
-复刻项目 `apeloa-agent-java`（位于 E:\people\agent-timo）锁定的技术栈版本（2026-09-02 经 Maven Central 实证确认）：
+复刻项目 `timo-agent-java`（位于 E:\people\agent-timo，2026-09-04 由 apeloa-agent-java 全量改名而来）锁定的技术栈版本（2026-09-02 经 Maven Central 实证确认）：
 
 - **AgentScope Java 2.0.2**（GA，2026-08-10 发布；最新 GA 即此，2.0.3-SNAPSHOT 在 GitHub HEAD）。坐标：`io.agentscope:agentscope-harness`、`agentscope-core`、`agentscope-extensions-model-openai`、`agentscope-extensions-scheduler`、`agentscope-spring-boot-starter`、`agentscope-openai-spring-boot-starter`、BOM `agentscope-dependencies-bom`。全部 2.0.2 已在 Maven Central（repo.maven.apache.org 实测 HTTP 200）。
 - **Spring Boot 4.0.4 / Java 17 基线** —— 这是 2.0.2 BOM 实际锁定的版本。本地实测解析结果（2026-09-02，`dependency:tree -Dverbose`）：Spring Framework 统一 **7.0.6**（Boot parent 4.0.4 的 dependencyManagement 优先于 import 的 agentscope BOM；spring/agentscope 相关 **零冲突**，唯一 omitted-for-conflict 是 test scope 的 opentelemetry-semconv 1.41→1.40，无害）。

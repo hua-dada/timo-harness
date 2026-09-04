@@ -49,7 +49,7 @@ app:
     # 空闲驱逐阈值：仅 IDLE 且无 SSE 连接的会话才回收（M1-6 无持久化，驱逐即丢历史）。
     idle-minutes: 30
     # 每会话 ReActAgent 的系统提示与最大迭代轮数。
-    sys-prompt: "你是 apeloa-agent 的编码助手，可用工具读写与执行工作区文件。"
+    sys-prompt: "你是 timo-agent 的编码助手，可用工具读写与执行工作区文件。"
     max-iters: 20
 
   security:
@@ -70,7 +70,7 @@ app:
 # 浏览器路径只认 cookie（不读 header）。JWT_SECRET 无默认值：真认证模式下缺失即拒启
 # （SaTokenConfig fail-fast），避免再犯硬编码密钥。
 sa-token:
-  token-name: timo_session
+  token-name: pi_session
   timeout: 604800 # 7d，秒；cookie maxAge 同步取该值
   active-timeout: -1 # 关闭活跃度检查（非滑动：源无续期）
   is-read-cookie: true
@@ -85,7 +85,7 @@ sa-token:
 # classpath*:/mapper/**/*.xml（M1-11 的三张表暂用注解 SQL + BaseMapper，未落 XML）。
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  type-handlers-package: com.apeloa.agent.db # UUID 实体字段 ↔ PG uuid 列
+  type-handlers-package: com.agent.timo.db # UUID 实体字段 ↔ PG uuid 列
   configuration:
     map-underscore-to-camel-case: true
   global-config:
@@ -96,4 +96,4 @@ mybatis-plus:
 logging:
   level:
     root: INFO
-    com.apeloa: DEBUG
+    com.agent.timo: DEBUG

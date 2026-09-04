@@ -5,35 +5,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.apeloa</groupId>
-        <artifactId>apeloa-agent-java</artifactId>
+        <groupId>com.timo</groupId>
+        <artifactId>agent-timo</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>app-server</artifactId>
-    <name>apeloa-agent :: app-server</name>
+    <name>agent-timo :: app-server</name>
     <description>Spring Boot 主应用（聚合 + SSE 网关 + AgentScope PoC + Flyway）</description>
 
     <dependencies>
         <!-- 本仓库业务模块（app-server 聚合全部） -->
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-workspace</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-plugins</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-tasks</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.apeloa</groupId>
+            <groupId>com.timo</groupId>
             <artifactId>agent-admin</artifactId>
         </dependency>
 

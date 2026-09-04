@@ -9,13 +9,18 @@ spring:
     username: ${POSTGRES_USER:timo}
     password: ${POSTGRES_PASSWORD:timo123}
     driver-class-name: org.postgresql.Driver
+    # 测试限池：全量套件缓存多个 @SpringBootTest 上下文、各持一池，默认 20 连接/池
+    # 会把远端共享 PG 的 max_connections 打穿（FATAL: too many clients already）。
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
 mybatis-plus:
-  type-handlers-package: com.apeloa.agent.db
+  type-handlers-package: com.agent.timo.db
 
 # 存量测试（M1-6/11/12）全走 X-User-Id 头：显式开回 dev-user，主 yml 已默认关闭。
 app:

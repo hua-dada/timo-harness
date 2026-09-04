@@ -13,7 +13,7 @@
 | M1-5 | **PoC-A**：会话消息重放一致性验证（fork 前置）（已交付 2026-09-03，结论见 03 §3.2） | 3 | M1-4 |
 | M1-6 | SSE 网关桥：事件系统 → ChatDelta 协议 + 断线续传 | 8 | M1-4 |
 | M1-7 | coding-tools：read/write/edit + safe-path 单测移植 | 8 | M1-4 |
-| M1-8 | coding-tools：bash + 危险命令识别 + Permission/HITL 拦截 | 7 | M1-7 |
+| M1-8 | coding-tools：bash + 危险命令识别 + Permission/HITL 拦截（已交付 2026-09-04，端到端见 BashHitlReActAgentTest） | 7 | M1-7 |
 | M1-9 | Docker 沙箱：共享容器管理 + per-uid + Workspace backend 验证 | 8 | M1-7 |
 | M1-10 | pids 巡检 + 容器自愈（移植） | 3 | M1-9 |
 | M1-11 | 会话持久化/恢复 + entries 落盘 | 4 | M1-6 |
